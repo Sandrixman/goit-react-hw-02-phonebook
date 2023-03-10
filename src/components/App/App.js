@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
 
-import ContactForm from 'components/ContactForm/ContactForm';
+import { ContactForm } from 'components/ContactForm/ContactForm';
 import ContactList from 'components/ContactList/ContactList';
 import Filter from 'components/Filter/Filter';
 
@@ -50,7 +50,7 @@ class App extends Component {
         <ContactForm onSubmit={this.formSubmitHandler} />
 
         <h2>Contacts</h2>
-        <Filter changeFilter={this.changeFilter} />
+        <Filter changeFilter={this.changeFilter} value={this.state.filter} />
         <ContactList onFilter={onFilter} onDelete={this.deleteContact} />
       </section>
     );

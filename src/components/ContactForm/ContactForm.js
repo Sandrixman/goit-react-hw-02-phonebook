@@ -1,63 +1,63 @@
-import { Component } from 'react';
 import { nanoid } from 'nanoid';
-import { Form, Label, Button } from './ContactForm.styled';
+import { Formik, Field, ErrorMessage } from 'formik';
+import { string, number, object } from 'yup';
+import { FormStyled, ErrorText, Label, Button } from './ContactForm.styled';
 
-class ContactForm extends Component {
-  state = {
+const schema = object({
+  name: string().required(),
+  number: number().required().positive().integer(),
+});
+
+const FormError = ({ name }) => {
+  return (
+    <ErrorMessage
+      name={name}
+      render={message => <ErrorText>{message}</ErrorText>}
+    />
+  );
+};
+
+export const ContactForm = ({ onSubmit }) => {
+  const initialValues = {
     name: '',
     number: '',
   };
 
-  id = nanoid();
+  const id = nanoid();
 
-  handleInputChange = e => {
-    const { name, value } = e.currentTarget;
+  const handleSubmit = (values, { resetForm }) => {
+    onSubmit(values);
 
-    this.setState({ [name]: value });
+    resetForm();
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-
-    this.props.onSubmit(this.state);
-    this.reset();
-  };
-
-  reset = () => {
-    this.setState({ name: '', number: '' });
-  };
-
-  render() {
-    const { name, number } = this.state;
-
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <label htmlFor={this.id}>Name</label>
-        <input
-          id={this.id}
+  return (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={schema}
+    >
+      <FormStyled>
+        <Label htmlFor={id}>Name</Label>
+        <Field
+          id={id}
           type="text"
           name="name"
-          value={name}
-          onChange={this.handleInputChange}
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
         />
-        <Label htmlFor={this.id}>Number</Label>
-        <input
-          id={this.id}
+        <FormError name="name" />
+        <Label htmlFor={id}>Number</Label>
+        <Field
+          id={id}
           type="tel"
           name="number"
-          value={number}
-          onChange={this.handleInputChange}
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           required
         />
+        <FormError name="number" />
         <Button type="submit">Add contact</Button>
-      </Form>
-    );
-  }
-}
-
-export default ContactForm;
+      </FormStyled>
+    </Formik>
+  );
+};

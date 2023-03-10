@@ -3,11 +3,11 @@ import { Section } from './Filter.styled';
 
 const id = nanoid();
 
-const Filter = ({ changeFilter }) => {
+const Filter = ({ changeFilter, value }) => {
   return (
     <Section>
       <label htmlFor={id}>Find contacts by name</label>
-      <input id={id} type="text" onChange={changeFilter} />
+      <input id={id} type="text" onChange={changeFilter} value={value} />
     </Section>
   );
 };
